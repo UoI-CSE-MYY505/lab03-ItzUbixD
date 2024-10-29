@@ -98,9 +98,34 @@ outShowRowLoop:
 # ----------------------------------------
 
 rgb888_to_rgb565:
+    add t0, zero, zero #arxikopoihsh t0-->counter gia tis grammes
+rowLoop:
+    bge t0, a2, rowsFinished #an perasei apo oles tis grammes tote termatizoume
+    add t1, zero, zero #arxikopoihsh t1-->counter gia tis sthles
+columnLoop:
+    bge t1, a1, columnsFinished #an perasei apo ola tis sthles prepei na allaxei grammh
+    lbu t2, 0(a0) #fortwnoume to kokkino
+    lbu t3, 1(a0) #fortwnoume to prasino
+    lbu t4, 2(a0) #fortwnoume to mple
+    andi t2, t2, 0xf8 #kanoume bitwise AND gia na kratsioume ta 5 shmantikotera bits
+    slli t2, t2, 8 #kanoume shift 8 bits aristera gia na paei stin teliki thesh pou tha exei sto RGB565
+    andi t3, t3, 0xfc #kanoume bitwise AND gia na kratsioume ta 6 shmantikotera bits
+    slli t3, t3, 3 #kanoume shift aristera 3 bits gia na paei stin teliki thesh pou tha exei sto RGB565
+    srli t4, t4, 3 #kanoume shift dexia 3 bits gia na krathsoume ta 5 shmantikotera bits kai na to pame kateutheian stin thesh pou tha exei sto RBG565
+    or t2, t2, t3 #kanoume OR metaxy tou R kai tou G gia na ta syndesoume 
+    or t2, t2, t4 #kanoume OR mtaxy tou RG kai tou B gia na ta syndesoume
+    sh t2, 0(a3) #kanoume save sto output register
+    addi a0 , a0, 3 #o pointer tou input deixnei sto epomeno pixel tou RGB888 me syn3 afou exei 3 bytes ana pixel
+    addi a3 , a3, 2 #o pointer tou output deixnei sto epomeno pixel tou RGB565 me syn2 afou exei 2 bytes ana pixel
+    addi t1, t1, 1 #auxanoume ton pointer twn sthlwn 
+    j columnLoop #ekteloume pali to loop gia na pame sthn epomenh sthlh
+columnsFinished:
+    addi t0, t0, 1 #auksanoume ton pointer twn grammwn afou exoume perasei apo oles tis sthles
+    j rowLoop #ekteloume to loop gia tis grammes kai pame sthn epomenh grammh
+rowsFinished:
+    jalr zero, ra, 0
 # ----------------------------------------
 # Write your code here.
 # You may move the "return" instruction (jalr zero, ra, 0).
-    jalr zero, ra, 0
 
 
